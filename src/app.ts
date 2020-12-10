@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import handlebars from 'handlebars';
 import fs from 'fs';
+import { exec } from 'child_process';
 
 type BlogPostBody = {
   title: string;
@@ -11,7 +12,11 @@ type BlogPostBody = {
   commitMessage: string;
 }
 
+// This is the path where posts exists. It's where new posts from the web service will be put.
 const BLOG_PATH = '/Users/dylanhand/Projects/dylanhand.github.io/_posts';
+
+// This is the path from which the site deployment script should be run
+const DEPLOY_PATH = '/Users/dylanhand/Projects/dylanhand.github.io/';
 
 const app = express();
 app.use(bodyParser.json());
@@ -40,6 +45,13 @@ app.post('/publish', (req, res) => {
 
   const filePath = `${BLOG_PATH}/${filename(postBody.title, postBody.date)}`;
   fs.writeFileSync(filePath, markdown);
+
+  exec(`cd ${DEPLOY_PATH} ; rake 'deploy[${postBody.commitMessage}]'`, (err, stdout, stderr) => {
+    console.log(err);
+    console.log(stderr);
+    console.log(stdout);
+  });
+
   res.send(markdown);
 });
 
