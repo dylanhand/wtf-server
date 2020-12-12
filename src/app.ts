@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import handlebars from 'handlebars';
 import fs from 'fs';
 import { exec } from 'child_process';
+import dotenv from 'dotenv';
 
 type Image = {
   filename: string;
@@ -18,16 +19,16 @@ type BlogPostBody = {
   commitMessage: string;
 }
 
-const PROJECT_PATH = '/Users/dylanhand/Projects/dylanhand.github.io';
+dotenv.config();
 
 // This is the path where blog posts live.
-const BLOG_PATH = `${PROJECT_PATH}/_posts`;
+const { POSTS_PATH } = process.env;
 
 // This is where images will be put.
-const IMAGES_PATH = `${PROJECT_PATH}/assets/img`;
+const { IMAGES_PATH } = process.env;
 
 // This is the path from which the site deployment script should be run.
-const DEPLOY_SCRIPT_PATH = PROJECT_PATH;
+const { DEPLOY_SCRIPT_PATH } = process.env;
 
 const app = express();
 app.use(bodyParser.json({ limit: '8mb' }));
@@ -48,7 +49,7 @@ const postFilename = (title: string, date: string) => {
 
 const savePost = (postBody: BlogPostBody) => {
   const markdown = renderMarkdown(postBody);
-  const filePath = `${BLOG_PATH}/${postFilename(postBody.title, postBody.date)}`;
+  const filePath = `${POSTS_PATH}/${postFilename(postBody.title, postBody.date)}`;
   fs.writeFileSync(filePath, markdown);
 };
 
