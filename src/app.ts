@@ -34,6 +34,25 @@ const app = express();
 app.use(bodyParser.json({ limit: '8mb' }));
 const port = 3000;
 
+const isAuthorized = (req: express.Request): boolean => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7, authHeader.length);
+    if (token === process.env.AUTH_TOKEN) {
+      return true;
+    }
+  }
+  return false;
+};
+
+app.use((req, res, next) => {
+  if (isAuthorized(req)) {
+    next();
+  } else {
+    res.status(401).send({ error: 'Unauthorized' });
+  }
+});
+
 const renderMarkdown = (postBody: BlogPostBody): string => {
   const template = fs.readFileSync(`${__dirname}/post.hbs`, 'utf8');
   const compiledTemplate = handlebars.compile(template);
