@@ -90,7 +90,9 @@ app.post('/publish', (req, res) => {
   const postBody: BlogPostBody = req.body;
 
   savePost(postBody);
-  saveImage(postBody.image);
+  if (postBody.image) {
+    saveImage(postBody.image);
+  }
   deploySite(postBody.commitMessage);
 
   res.send('success, baby');
