@@ -12,5 +12,5 @@ $ sudo systemctl start postie.service
 
 ### Viewing logs
 ```
-$ journalctl postie
+$ journalctl -u postie
 ```
