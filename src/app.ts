@@ -86,6 +86,10 @@ const deploySite = (commitMessage: string) => {
   });
 };
 
+app.get('/', (req, res) => {
+  res.send('you\'re doing great');
+});
+
 app.post('/publish', (req, res) => {
   const postBody: BlogPostBody = req.body;
 
