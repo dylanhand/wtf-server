@@ -12,9 +12,6 @@ type BlogPostBody = {
 
 dotenv.config();
 
-// This is the path where blog posts live.
-const { POSTS_PATH } = process.env;
-
 // This is the path from which git commands should be run (for deployment)
 const { REPO_PATH } = process.env;
 
@@ -61,7 +58,7 @@ const postFilename = (title: string) => {
 
 const savePost = (postBody: BlogPostBody) => {
   const markdown = renderMarkdown(postBody);
-  const filePath = `${POSTS_PATH}/${postFilename(postBody.title)}`;
+  const filePath = `${REPO_PATH}/_posts/${postFilename(postBody.title)}`;
   fs.writeFileSync(filePath, markdown);
 };
 
