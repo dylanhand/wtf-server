@@ -5,18 +5,9 @@ import fs from 'fs';
 import { exec } from 'child_process';
 import dotenv from 'dotenv';
 
-type Image = {
-  filename: string;
-  base64: string;
-}
-
 type BlogPostBody = {
   title: string;
-  date: string;
   body: string;
-  tags: [string];
-  image: Image;
-  commitMessage: string;
 }
 
 dotenv.config();
@@ -24,11 +15,8 @@ dotenv.config();
 // This is the path where blog posts live.
 const { POSTS_PATH } = process.env;
 
-// This is where images will be put.
-const { IMAGES_PATH } = process.env;
-
-// This is the path from which the site deployment script should be run.
-const { DEPLOY_SCRIPT_PATH } = process.env;
+// This is the path from which git commands should be run (for deployment)
+const { REPO_PATH } = process.env;
 
 const app = express();
 app.use(bodyParser.json({ limit: '8mb' }));
@@ -59,27 +47,26 @@ const renderMarkdown = (postBody: BlogPostBody): string => {
   return compiledTemplate(postBody);
 };
 
-const postFilename = (title: string, date: string) => {
+const dateString = () => {
+  let yourDate = new Date();
+  const offset = yourDate.getTimezoneOffset();
+  yourDate = new Date(yourDate.getTime() - offset * 60 * 1000);
+  return yourDate.toISOString().split('T')[0];
+};
+
+const postFilename = (title: string) => {
   const titleFormatted = title.toLowerCase().trim().replace(' ', '-');
-  // TODO: validate dates. For now we assume the sender knows what they're doing
-  // dates must be in format: 1969-04-20
-  return `${date}-${titleFormatted}.md`;
+  return `${dateString()}-${titleFormatted}.md`;
 };
 
 const savePost = (postBody: BlogPostBody) => {
   const markdown = renderMarkdown(postBody);
-  const filePath = `${POSTS_PATH}/${postFilename(postBody.title, postBody.date)}`;
+  const filePath = `${POSTS_PATH}/${postFilename(postBody.title)}`;
   fs.writeFileSync(filePath, markdown);
 };
 
-const saveImage = (image: Image) => {
-  const imageBuffer = Buffer.from(image.base64, 'base64');
-  const filePath = `${IMAGES_PATH}/${image.filename}`;
-  fs.writeFileSync(filePath, imageBuffer);
-};
-
-const deploySite = (commitMessage: string) => {
-  exec(`cd ${DEPLOY_SCRIPT_PATH} ; rake 'deploy[${commitMessage}]'`, (err, stdout, stderr) => {
+const deploySite = (postTitle: String) => {
+  exec(`cd ${REPO_PATH} ; git pull ; git add . ; git commit -m "New Post: ${postTitle}" ; git push`, (err, stdout, stderr) => {
     console.log(err);
     console.log(stderr);
     console.log(stdout);
@@ -94,12 +81,9 @@ app.post('/publish', (req, res) => {
   const postBody: BlogPostBody = req.body;
 
   savePost(postBody);
-  if (postBody.image) {
-    saveImage(postBody.image);
-  }
-  deploySite(postBody.commitMessage);
+  deploySite(postBody.title);
 
-  res.send('success, baby');
+  res.send('you did great');
 });
 
 app.listen(port, () => {

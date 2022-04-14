@@ -6,7 +6,7 @@
     "test": "test",
     "build": "tsc && npm run copy-hbs",
     "copy-hbs": "cp ./src/post.hbs ./build",
-    "start": "tsc && node build/app.js"
+    "start": "npm run build && node build/app.js"
   },
   "repository": {
     "type": "git",
