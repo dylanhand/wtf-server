@@ -1,6 +1,6 @@
-# Postie
+# WTF-SERVER
 
-A server for publishing static site blog posts.
+A server for publishing incredible stuff on dylan.wtf.
 
 ### Service setup on raspberry pi
 
