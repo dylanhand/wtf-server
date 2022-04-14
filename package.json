@@ -1,7 +1,7 @@
 {
-  "name": "postie",
+  "name": "wtf-server",
   "version": "1.0.0",
-  "description": "The ultimate server for remotely adding posts to a static site.",
+  "description": "Post rad stuff to dylan.wtf.",
   "scripts": {
     "test": "test",
     "build": "tsc && npm run copy-hbs",
