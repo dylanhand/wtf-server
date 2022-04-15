@@ -1,13 +1,13 @@
 # WTF-SERVER
 
-A server for publishing incredible stuff on dylan.wtf.
+A server for publishing incredible delights on dylan.wtf.
 
 ### Service setup on raspberry pi
 
 ```
-$ sudo cp postie.service /etc/systemd/system
-$ sudo systemctl enable postie.service
-$ sudo systemctl start postie.service
+$ sudo cp wtf.service /etc/systemd/system
+$ sudo systemctl enable wtf.service
+$ sudo systemctl start wtf.service
 ```
 
 ### Viewing logs

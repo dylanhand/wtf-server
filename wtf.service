@@ -1,13 +1,13 @@
 [Unit]
-Description=Postie Server Service
+Description=WTF Server Service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/pi/Projects/postie-server
+WorkingDirectory=/home/pi/Projects/wtf-server
 ExecStart=/usr/bin/npm start
 Restart=on-failure
 User=pi
-# Environment=PORT=8000
+Environment=PORT=8000
 
 [Install]
 WantedBy=multi-user.target
