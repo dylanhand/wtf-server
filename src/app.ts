@@ -17,7 +17,7 @@ const { REPO_PATH } = process.env;
 
 const app = express();
 app.use(bodyParser.json({ limit: '8mb' }));
-const port = 3000;
+const port = 8000;
 
 const isAuthorized = (req: express.Request): boolean => {
   const authHeader = req.headers.authorization;

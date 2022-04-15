@@ -6,8 +6,8 @@ After=network.target
 WorkingDirectory=/home/pi/Projects/wtf-server
 ExecStart=/usr/bin/npm start
 Restart=on-failure
-User=pi
-Environment=PORT=8000
+User=p# i
+# Environment=PORT=8000
 
 [Install]
 WantedBy=multi-user.target
