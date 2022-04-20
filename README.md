@@ -12,5 +12,5 @@ $ sudo systemctl start wtf.service
 
 ### Viewing logs
 ```
-$ journalctl -u postie
+$ journalctl -u wtf
 ```
