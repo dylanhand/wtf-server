@@ -14,6 +14,7 @@ dotenv.config();
 
 // This is the path from which git commands should be run (for deployment)
 const { REPO_PATH } = process.env;
+const { AUTH_TOKEN } = process.env;
 
 const app = express();
 app.use(bodyParser.json({ limit: '8mb' }));
@@ -23,7 +24,7 @@ const isAuthorized = (req: express.Request): boolean => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7, authHeader.length);
-    if (token === process.env.AUTH_TOKEN) {
+    if (token === AUTH_TOKEN) {
       return true;
     }
   }
