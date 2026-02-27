@@ -16,6 +16,8 @@ dotenv.config();
 // This is the path from which git commands should be run (for deployment)
 const { REPO_PATH } = process.env;
 const { AUTH_TOKEN } = process.env;
+if (!REPO_PATH) throw new Error('REPO_PATH is not set');
+if (!AUTH_TOKEN) throw new Error('AUTH_TOKEN is not set');
 
 const app = express();
 app.use(express.json({ limit: '8mb' }));
@@ -65,7 +67,7 @@ const savePost = (postBody: BlogPostBody) => {
 };
 
 const deploySite = async (postTitle: string) => {
-  const git = (...args: string[]) => execFile('git', ['-C', REPO_PATH!, ...args]);
+  const git = (...args: string[]) => execFile('git', ['-C', REPO_PATH, ...args]);
   await git('pull');
   await git('add', '.');
   await git('commit', '-m', `New Post: ${postTitle}`);
