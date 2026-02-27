@@ -56,7 +56,7 @@ const dateString = () => {
 };
 
 const postFilename = (title: string) => {
-  const titleFormatted = title.toLowerCase().trim().replace(' ', '-');
+  const titleFormatted = title.toLowerCase().trim().replaceAll(' ', '-');
   return `${dateString()}-${titleFormatted}.md`;
 };
 
