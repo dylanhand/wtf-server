@@ -79,10 +79,18 @@ app.get('/', (req, res) => {
 });
 
 app.post('/publish', async (req, res) => {
-  const postBody: BlogPostBody = req.body;
+  const { title, body } = req.body;
+  if (typeof title !== 'string' || !title.trim()) {
+    res.status(400).send({ error: 'title is required' });
+    return;
+  }
+  if (typeof body !== 'string' || !body.trim()) {
+    res.status(400).send({ error: 'body is required' });
+    return;
+  }
   try {
-    savePost(postBody);
-    await deploySite(postBody.title);
+    savePost({ title, body });
+    await deploySite(title);
     res.send('you did great');
   } catch (err) {
     console.error(err);
