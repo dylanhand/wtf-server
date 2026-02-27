@@ -88,12 +88,14 @@ app.post('/publish', async (req, res) => {
     res.status(400).send({ error: 'body is required' });
     return;
   }
+  console.log(`Publishing post: "${title}"`);
   try {
     savePost({ title, body });
     await deploySite(title);
+    console.log(`Successfully published: "${title}"`);
     res.send('you did great');
   } catch (err) {
-    console.error(err);
+    console.error(`Failed to publish "${title}":`, err);
     res.status(500).send({ error: 'Deploy failed' });
   }
 });
