@@ -1,8 +1,9 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import handlebars from 'handlebars';
 import fs from 'fs';
-import { exec } from 'child_process';
+import { execFile as execFileCallback } from 'child_process';
+import { promisify } from 'util';
+const execFile = promisify(execFileCallback);
 import dotenv from 'dotenv';
 
 type BlogPostBody = {
@@ -17,7 +18,7 @@ const { REPO_PATH } = process.env;
 const { AUTH_TOKEN } = process.env;
 
 const app = express();
-app.use(bodyParser.json({ limit: '8mb' }));
+app.use(express.json({ limit: '8mb' }));
 const port = 8000;
 
 const isAuthorized = (req: express.Request): boolean => {
@@ -63,23 +64,23 @@ const savePost = (postBody: BlogPostBody) => {
   fs.writeFileSync(filePath, markdown);
 };
 
-const deploySite = (postTitle: String) => {
-  exec(`cd ${REPO_PATH} ; git pull ; git add . ; git commit -m "New Post: ${postTitle}" ; git push`, (err, stdout, stderr) => {
-    console.log(err);
-    console.log(stderr);
-    console.log(stdout);
-  });
+const deploySite = async (postTitle: string) => {
+  const git = (...args: string[]) => execFile('git', ['-C', REPO_PATH!, ...args]);
+  await git('pull');
+  await git('add', '.');
+  await git('commit', '-m', `New Post: ${postTitle}`);
+  await git('push');
 };
 
 app.get('/', (req, res) => {
   res.send('you\'re doing great');
 });
 
-app.post('/publish', (req, res) => {
+app.post('/publish', async (req, res) => {
   const postBody: BlogPostBody = req.body;
 
   savePost(postBody);
-  deploySite(postBody.title);
+  await deploySite(postBody.title);
 
   res.send('you did great');
 });
