@@ -78,11 +78,14 @@ app.get('/', (req, res) => {
 
 app.post('/publish', async (req, res) => {
   const postBody: BlogPostBody = req.body;
-
-  savePost(postBody);
-  await deploySite(postBody.title);
-
-  res.send('you did great');
+  try {
+    savePost(postBody);
+    await deploySite(postBody.title);
+    res.send('you did great');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: 'Deploy failed' });
+  }
 });
 
 app.listen(port, () => {
